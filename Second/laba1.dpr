@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 program laba21;
 {$APPTYPE CONSOLE}
 uses SysUtils, Windows;
