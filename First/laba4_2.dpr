@@ -1,7 +1,7 @@
 program laba4_2;
 {$APPTYPE CONSOLE}
 
-const
+const                    
   n1 = 5;
 
 var

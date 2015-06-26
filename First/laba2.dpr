@@ -1,6 +1,6 @@
 program laba2;
 {$APPTYPE CONSOLE}
-
+                 
 uses
   SysUtils;
 

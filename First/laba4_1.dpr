@@ -3,7 +3,7 @@ program laba4_1;
 
 uses
   SysUtils;
-
+                            
 const
   n = 5;
 

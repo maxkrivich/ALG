@@ -1,7 +1,7 @@
 program laba21;
 {$APPTYPE CONSOLE}
 uses SysUtils, Windows;
-type
+type                          
   T2Dint = array of array of Integer;
   Tstr = array of string;
 var

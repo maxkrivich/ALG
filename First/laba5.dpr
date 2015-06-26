@@ -1,7 +1,7 @@
 program laba5;
 {$APPTYPE CONSOLE}
 
-uses
+uses                      
   SysUtils;
 
 const

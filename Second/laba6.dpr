@@ -1,5 +1,5 @@
 program laba26;
-{$APPTYPE CONSOLE}
+{$APPTYPE CONSOLE}                  
 uses SysUtils, Windows;
 
 procedure cls;

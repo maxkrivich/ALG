@@ -2,7 +2,7 @@ program laba3;
 {$APPTYPE CONSOLE}
 uses
   SysUtils, Math;
-
+             
 var
   n, k, j, i, q, w, e, r: integer;
   s, f: double;

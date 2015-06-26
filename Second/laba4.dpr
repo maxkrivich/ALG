@@ -1,4 +1,4 @@
-program laba24;
+program laba24;              
 {$APPTYPE CONSOLE}
 uses SysUtils, Windows;
 type
