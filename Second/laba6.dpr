@@ -124,9 +124,7 @@ begin
             until m = 0;
             Inc(i);
           end;
-          m := Low(mas);
-          n := High(mas);
-          s := SumMas(mas, m, n);
+          s := SumMas(mas, Low(mas), High(mas));
           Writeln;
           Writeln('The sum of digits: ', s);
           n := 0;
