@@ -6,7 +6,7 @@ const
   n = 4;
 type
   TArr = array[1..n] of Integer;
-
+ 
 procedure RandArr(var arr: TArr);
 var
   m, i, j, x: integer;
