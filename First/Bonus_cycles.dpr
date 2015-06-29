@@ -1,7 +1,7 @@
 program Bonus_cycles;
 {$APPTYPE CONSOLE}
 uses SysUtils;
-
+ 
 var
   a, b, c, sq, n: integer;
 
