@@ -15,7 +15,7 @@ begin
   m := 3;
   arr[1] := Random(8) + 1;
   Randomize;
-  for i := 2 to High(arr) do
+  for i := Low(arr)+1 to High(arr) do
   begin
     repeat
       f := false;
@@ -35,7 +35,7 @@ var
   i: Integer;
 begin
   st := IntToStr(tmp);
-  for i := 1 to High(arr) do
+  for i := Low(arr) to High(arr) do
     arr[i] := StrToInt(st[i]);
 end;
 
