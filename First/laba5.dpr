@@ -17,7 +17,6 @@ begin
   write('Matrix N1:');
   for i := low(x1) to high(x1) do
   begin
-    ;
     writeln;
     for j := low(x1) to high(x1) do
     begin
@@ -55,6 +54,7 @@ begin
   writeln('Vector "b": ');
   for i := low(x1) to high(x1) do
     write(x3[i], ' ');
+  writeln;
   readln;
 end.
 
