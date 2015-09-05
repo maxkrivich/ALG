@@ -39,14 +39,11 @@ begin
 end;
 
 function size: integer;
-var
-  size: Integer;
 begin
-  size := 0;
+  Result := 0;
   for i := Low(frequency) to High(frequency) do
     if frequency[i] <> 0 then
-      Inc(size);
-  Result := size;
+      Inc(Result);
 end;
 
 procedure Huffman;
