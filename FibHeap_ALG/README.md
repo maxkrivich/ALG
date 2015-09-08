@@ -2,4 +2,6 @@
 
 ### Operation:
  - Make Heap  +
- - insert     -
+ - Insert     -
+ - Find Min   -
+ - .....
