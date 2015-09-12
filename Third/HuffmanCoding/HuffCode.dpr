@@ -19,12 +19,12 @@ type
 var
   huff: TArr;
   i: integer;
-  frequency: array[97..122] of integer;
-  code: array[97..122] of string;
+  frequency: array[33..122] of integer;
+  code: array[33..122] of string;
 
 procedure Sort;
 var
-  tmp: pnode;
+  tmp: pnode;    
   i, j: integer;
 begin
   for i := 0 to high(huff) - 1 do
