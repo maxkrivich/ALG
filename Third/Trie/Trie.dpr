@@ -99,8 +99,6 @@ begin
       pushFront(n^.fCh, s[i]);
       f := n^.fCh;
     end;
-    if (s[i] = '$') and (f^.letter = '$') then
-      Exit;
     n := f;
   end;
   pushFront(n^.fCh, '$');
