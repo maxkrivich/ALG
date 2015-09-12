@@ -77,7 +77,7 @@ begin
   while not (Eof(f)) do
   begin
     Readln(f, tmp);
-    for i := 1 to Length(tmp) - 1 do
+    for i := 1 to Length(tmp) do
       if tmp[i] in ['a'..'z'] then
         Inc(frequency[Ord(tmp[i])]);
   end;
@@ -136,7 +136,7 @@ begin
   begin
     NewStr := '';
     Readln(f1, tmp);
-    for i := 1 to Length(tmp) - 1 do
+    for i := 1 to Length(tmp) do
       NewStr := NewStr + code[Ord(tmp[i])];
     Writeln(f2, newStr);
   end;
