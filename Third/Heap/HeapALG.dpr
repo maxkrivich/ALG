@@ -124,7 +124,6 @@ begin
     l := getLeftChild(p);
     r := getRightChild(p);
   end;
-
 end;
 
 procedure printHeap();
