@@ -60,15 +60,15 @@ end;
 
 procedure makeHeap();
 begin
-  lvl := 1;
+  lvl := 0;
   size := 0;
-  SetLength(heap, (1 shl lvl) + 1);
+  SetLength(heap, (1 shl lvl));
 end;
 
 procedure newLevel();
 begin
   Inc(lvl);
-  SetLength(heap, (1 shl lvl) + 1);
+  SetLength(heap, (1 shl lvl) - 1);
 end;
 
 procedure delLevel();
@@ -124,6 +124,8 @@ begin
     l := getLeftChild(p);
     r := getRightChild(p);
   end;
+  if (size < (1 shl lvl) - 1)then
+    delLevel();
 end;
 
 procedure printHeap();
@@ -133,11 +135,13 @@ begin
   if size = 0 then
   begin
     Writeln('Heap is empty!');
+    Writeln('Level counts: ', lvl);
     exit;
   end;
-  for i := 0 to size - 1 do
+  for i := 0 to high(heap) do
     Write(heap[i], ' ');
   Writeln;
+  Writeln('Level counts: ', lvl);
 end;
 
 begin
