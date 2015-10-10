@@ -39,14 +39,18 @@ end;
 
 procedure insert(var heap: pheap; node: pnode);
 begin
+  node^.degree := 0;
+  node^.parent := nil;
+  node^.child := nil;
+  node^.left := node;
+  node^.right := node;
+  node^.mark := False;
   if (heapMin(heap) <> nil) then
   begin
-    node^.degree := 0;
-    node^.parent := nil;
-    node^.child := nil;
-    node^.left := node;
-    node^.right := node;
-    node^.mark := False;
+    node^.right = min;
+    node^.left = min.left;
+    heap^.min^.left = node;
+    node^.left^.right = node;
     if (node.key < heapMin(heap).key) then
       heap^.min := node;
   end
@@ -57,7 +61,7 @@ end;
 
 // --- --
 
-function heapUnion(h1, h2: pheap):pheap;
+function heapUnion(h1, h2: pheap): pheap;
 var
   h: pheap;
 begin
@@ -82,6 +86,48 @@ begin
     h^.size := h1^.size + h2^.size;
   end;
   Result := h;
+end;
+
+//TODO:write
+
+procedure consolidate(var h: pheap);
+begin
+
+end;
+//TODO:write
+
+procedure heap_link(var h: pheap, y, x: pnode);
+begin
+  Inc(x^.degree);
+  y^.mark := False;
+end;
+
+function extractMin(var heap: pheap): pnode;
+var
+  z, x: pnode;
+begin
+  z := heap^.min;
+  if (z <> nil) then
+  begin
+    z^.child^.parent := nil;
+    x := z^.child^.right;
+    while (x <> z^.child) do
+    begin
+      x^.parent := nil;
+      x := x^.right;
+    end;
+    //TODO: 6 from book
+
+    if (z = z^.right) then
+      heap^.min := nil
+    else
+    begin
+      heap^.min := z^.right;
+      // consolidate(h);     //TODO: write  consolidate
+    end;
+    Dec(heap^.size);
+  end;
+  Result := z;
 end;
 
 begin
