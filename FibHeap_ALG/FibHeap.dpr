@@ -19,7 +19,8 @@ type
     size: Integer;
     min: pnode;
   end;
-
+const
+  SIZE: Integer = 32;
   // -------(Make_Fib_Heap)    O(1)   --------
 
 procedure makeFib(var head: pheap);
@@ -47,11 +48,11 @@ begin
   node^.mark := False;
   if (heapMin(heap) <> nil) then
   begin
-    node^.right = min;
-    node^.left = min.left;
-    heap^.min^.left = node;
-    node^.left^.right = node;
-    if (node.key < heapMin(heap).key) then
+    node^.right := heapMin(heap);
+    node^.left := heapMin(heap)^.left;
+    heap^.min^.left := node;
+    node^.left^.right := node;
+    if (node^.key < heapMin(heap)^.key) then
       heap^.min := node;
   end
   else
@@ -87,19 +88,43 @@ begin
   end;
   Result := h;
 end;
-
 //TODO:write
 
-procedure consolidate(var h: pheap);
-begin
-
-end;
-//TODO:write
-
-procedure heap_link(var h: pheap, y, x: pnode);
+procedure heap_link(var h: pheap; y, x: pnode);
 begin
   Inc(x^.degree);
   y^.mark := False;
+end;
+
+//TODO:finish writing
+
+procedure consolidate(var h: pheap);
+var
+  A: array of pnode;
+  d, i: Integer;
+  x, y, w: pnode;
+begin
+  SetLength(A, SIZE);
+  x := heapMin(h);
+  while (x <> heapMin(h)) do
+  begin
+    w := x;
+    d := x^.degree;
+    while (A[d] <> nil) do
+    begin
+      y := A[d];
+      if (x^.key > y^.key) then
+      begin
+        x := @x xor @y;
+        y := @x xor @y;
+        x := @x xor @y;
+      end;
+      heap_link(h, y, x);
+      A[d] := nil;
+      Inc(d);
+    end;
+    A[d] := x;
+  end;
 end;
 
 function extractMin(var heap: pheap): pnode;
@@ -118,6 +143,8 @@ begin
     end;
     //TODO: 6 from book
 
+    z^.left^.right = z^.right;
+    z^.right^.left = z^.left;
     if (z = z^.right) then
       heap^.min := nil
     else
