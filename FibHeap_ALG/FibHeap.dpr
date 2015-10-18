@@ -88,10 +88,22 @@ begin
   end;
   Result := h;
 end;
-//TODO:write
+//TODO:95% done
 
-procedure heap_link(var h: pheap; y, x: pnode);
+procedure heapLink(var h: pheap; y, x: pnode);
 begin
+  y^.left^.right = y^.right;
+  y^.right^.left = y^.left;
+  if (x^.child = nil) then
+  begin
+    x^.child := y;
+    y^.right := y;
+    y^.left := y;
+  end
+  else
+  begin
+
+  end;
   Inc(x^.degree);
   y^.mark := False;
 end;
@@ -119,11 +131,18 @@ begin
         y := @x xor @y;
         x := @x xor @y;
       end;
-      heap_link(h, y, x);
+      heapLink(h, y, x);
       A[d] := nil;
       Inc(d);
     end;
     A[d] := x;
+  end;
+  h^.min := nil;
+  for i := 0 to SIZE do
+  begin
+    if (A[i] <> nil) then
+      if (h^.min = nil) or A[i].key < h^.min^.key then
+        h^.min := A[i];
   end;
 end;
 
