@@ -176,7 +176,57 @@ begin
   Result := z;
 end;
 
+//TODO
+procedure cut(var h:pheap;x,y:pnode);
+begin
+  //TODO: 1-2   from book
+  x^.parent:=nil;
+  x^.mark := False;
+end;
+//TODO
+procedure cascadingCut(var h: pheap; y: pnode);
+var
+  z: pnode;
+begin
+  z := y^.parent;
+  if (z <> nil) then
+  begin
+    if not (y^.mark) then
+      y^.mark := True
+    else
+    begin
+     // cut(h, y, z);
+     // cascadingCut(h, z);
+    end;
+  end;
+end;
+
+procedure decreaseKey(var h: pheap; x: pnode; k: Integer);
+var
+  y: pnode;
+begin
+  if (k > x^.key) then
+  begin
+    Writeln('Error');
+    Exit;
+  end;
+  x^.key := k;
+  y := x^.parent;
+  if (y <> nil) and (x^.key < y^.key) then
+  begin
+    //cut(h,x,y);
+    //cascadingCut(h,y);
+  end;
+  if (y^.key < heapMin(h)^.key) then
+    h^.min := x;
+end;
+
+procedure heapDelete(var h:pheap;x:pnode);
+begin
+ decreaseKey(h,x,Low(Integer));
+ extractMin(h);
+end;
+
 begin
   { TODO -oUser -cConsole Main : Insert code here }
 end.
-
