@@ -6,7 +6,13 @@ uses
   SysUtils, DateUtils, Math;
 
 type
+  pnode = ^node;
+  node = record
+    key: Double;
+    next: pnode;
+  end;
   TArr = array of Integer;
+  TPArr: array of pnode;
 
 const
   range: Integer = 100;
@@ -78,7 +84,7 @@ begin
   //print(arr);
 end;
 
-procedure heapSort(var arr: TArr);
+procedure HeapSort(var arr: TArr);
 var
   i: Integer;
 begin
@@ -136,7 +142,7 @@ var
   i, j, cnt, max, min: Integer;
 begin
   max := MaxIntValue(arr);
-  min := MInIntValue(arr);
+  min := MinIntValue(arr);
   SetLength(tmp, max - min + 1);
   for i := Low(arr) to High(arr) do
     Inc(tmp[arr[i] - min]);
@@ -175,7 +181,6 @@ begin
     end;
     ex := ex * 10;
   end;
-
 end;
 
 var
@@ -194,3 +199,4 @@ begin
   Writeln('TOTAL TIME: ', millisecondsbetween(t2, t1));
   Readln;
 end.
+
