@@ -2,10 +2,11 @@ program FibHeap;
 {$APPTYPE CONSOLE}
 
 uses
-  SysUtils;
+  SysUtils, Math;
 
 type
   // Node
+  ppnode = ^pnode;
   pnode = ^node;
   node = record
     key, degree: Integer;
@@ -20,213 +21,232 @@ type
     min: pnode;
   end;
 const
-  SIZE: Integer = 32;
-  // -------(Make_Fib_Heap)    O(1)   --------
+  DEFAULT_SIZE: Integer = 42;
 
-procedure makeFib(var head: pheap);
+procedure MakeFib(var head: pheap);
 begin
   New(head);
   head^.size := 0;
-  head.min := nil;
+  head^.min := nil;
 
 end;
-// -------(Min_Heap)    O(1)   --------
 
-function heapMin(heap: pheap): pnode;
+function cmp(n0, n1: pnode): Boolean;
+begin
+  if (n0^.key < n1^.key) then
+    Result := True
+  else
+    Result := False;
+end;
+
+function HeapMin(heap: pheap): pnode;
 begin
   Result := heap.min;
 end;
-// -------(Insert_Heap)    O(1)   --------
 
-procedure insert(var heap: pheap; node: pnode);
+function NewNode(key: Integer): pnode;
 begin
-  node^.degree := 0;
-  node^.parent := nil;
-  node^.child := nil;
-  node^.left := node;
-  node^.right := node;
-  node^.mark := False;
-  if (heapMin(heap) <> nil) then
-  begin
-    node^.right := heapMin(heap);
-    node^.left := heapMin(heap)^.left;
-    heap^.min^.left := node;
-    node^.left^.right := node;
-    if (node^.key < heapMin(heap)^.key) then
-      heap^.min := node;
-  end
-  else
-    heap^.min := node;
-  Inc(heap.size);
+  New(Result);
+  Result^.key := key;
+  Result^.parent := nil;
+  Result^.child := nil;
+  Result^.left := Result;
+  Result^.right := Result;
+  Result^.degree := 0;
+  Result^.mark := False;
+  // Result := Result;
 end;
 
-// --- --
-
-function heapUnion(h1, h2: pheap): pheap;
-var
-  h: pheap;
+procedure Insert(var h: pheap; var x: pnode; var rb: ppnode); overload;
 begin
-  makeFib(h);
-  if ((h1 <> nil) and (h2 <> nil)) then
+  if (rb^ = nil) then
   begin
-    h^.min := h1^.min;
-    if (h^.min <> nil) then
-    begin
-      if (h2^.min <> nil) then
-      begin
-        h^.min^.right^.left := h2^.min^.left;
-        h2^.min^.left^.right := h^.min^.right;
-        h^.min^.right := h2^.min;
-        h2^.min^.left := h^.min;
-        if (h2^.min^.key < h1^.min^.key) then
-          h^.min := h2^.min;
-      end;
-    end
-    else
-      h^.min := h2^.min;
-    h^.size := h1^.size + h2^.size;
-  end;
-  Result := h;
-end;
-//TODO:95% done
-
-procedure heapLink(var h: pheap; y, x: pnode);
-begin
-  y^.left^.right = y^.right;
-  y^.right^.left = y^.left;
-  if (x^.child = nil) then
-  begin
-    x^.child := y;
-    y^.right := y;
-    y^.left := y;
+    rb^ := x;
+    x^.left := x;
+    x^.right := x;
   end
   else
   begin
-
+    x^.right := rb^.right;
+    x^.right^.left := x;
+    x^.left := rb^;
+    rb^.right := x;
   end;
-  Inc(x^.degree);
-  y^.mark := False;
+  if (cmp(x, rb^)) then
+    rb^ := x;
+  if (rb^ = h^.min) then
+  begin
+    Inc(h^.size);
+    x^.parent := nil;
+  end;
 end;
 
-//TODO:finish writing
+procedure Insert(var h: pheap; x: pnode; var rb: ppnode; var p: pnode);
+  overload;
+begin
+  Insert(h, x, rb);
+  if (p <> nil) then
+  begin
+    Inc(p^.degree);
+    x^.parent := p;
+  end;
+end;
 
-procedure consolidate(var h: pheap);
+procedure Add(var h: pheap; key: Integer);
 var
-  A: array of pnode;
-  d, i: Integer;
-  x, y, w: pnode;
+  tmp: ppnode;
+  n: pnode;
 begin
-  SetLength(A, SIZE);
-  x := heapMin(h);
-  while (x <> heapMin(h)) do
-  begin
-    w := x;
-    d := x^.degree;
-    while (A[d] <> nil) do
-    begin
-      y := A[d];
-      if (x^.key > y^.key) then
-      begin
-        x := @x xor @y;
-        y := @x xor @y;
-        x := @x xor @y;
-      end;
-      heapLink(h, y, x);
-      A[d] := nil;
-      Inc(d);
-    end;
-    A[d] := x;
-  end;
-  h^.min := nil;
-  for i := 0 to SIZE do
-  begin
-    if (A[i] <> nil) then
-      if (h^.min = nil) or A[i].key < h^.min^.key then
-        h^.min := A[i];
-  end;
+  tmp := @h^.min;
+  n := NewNode(key);
+  Insert(h, n, tmp);
 end;
 
-function extractMin(var heap: pheap): pnode;
+function HeapUnion(h0: pheap; var h1: pheap): pheap;
 var
-  z, x: pnode;
+  pl, pr: pnode;
 begin
-  z := heap^.min;
-  if (z <> nil) then
+  if (h1^.min = nil) then
+    Exit;
+  if (h0^.min = nil) then
   begin
-    z^.child^.parent := nil;
-    x := z^.child^.right;
-    while (x <> z^.child) do
-    begin
-      x^.parent := nil;
-      x := x^.right;
-    end;
-    //TODO: 6 from book
-
-    z^.left^.right = z^.right;
-    z^.right^.left = z^.left;
-    if (z = z^.right) then
-      heap^.min := nil
-    else
-    begin
-      heap^.min := z^.right;
-      // consolidate(h);     //TODO: write  consolidate
-    end;
-    Dec(heap^.size);
+    h0^.min := h1^.min;
+    h0^.size := h1^.size;
+  end
+  else
+  begin
+    pl := h1^.min^.left;
+    pr := h0^.min^.right;
+    h0^.min^.right := h1^.min;
+    h1^.min^.left := h0^.min;
+    pl^.right := pr;
+    pr^.left := pl;
+    Inc(h0^.size, h1^.size);
   end;
-  Result := z;
+  if ((h0^.min = nil) or ((h1^.min <> nil) and cmp(h1^.min, h0^.min))) then
+    h0^.min := h1^.min;
+  h1^.min := nil;
+  h1^.size := 0;
+  Result := h0;
 end;
 
-//TODO
-procedure cut(var h:pheap;x,y:pnode);
+procedure LRPointers(var n: pnode);
 begin
-  //TODO: 1-2   from book
-  x^.parent:=nil;
-  x^.mark := False;
+  if (n^.left <> n) then
+  begin
+    n^.right^.left := n^.left;
+    n^.left^.right := n^.right;
+  end;
 end;
-//TODO
-procedure cascadingCut(var h: pheap; y: pnode);
+
+procedure Cut(var h: pheap; var n: pnode);
+var
+  tmp: ppnode;
+begin
+  Dec(n^.parent^.degree);
+  if (n^.right = n) then
+    n^.parent^.child := nil
+  else
+    n^.parent^.child := n^.right;
+  LRPointers(n);
+  tmp := @h^.min;
+  Insert(h, n, tmp);
+  n^.mark := False;
+end;
+
+procedure CascadingCut(var h: pheap; y: pnode);
 var
   z: pnode;
 begin
   z := y^.parent;
   if (z <> nil) then
   begin
-    if not (y^.mark) then
-      y^.mark := True
+    if not (z^.mark) then
+      z^.mark := True
     else
     begin
-     // cut(h, y, z);
-     // cascadingCut(h, z);
+      Cut(h, y);
+      CascadingCut(h, z);
     end;
   end;
 end;
 
-procedure decreaseKey(var h: pheap; x: pnode; k: Integer);
+procedure DeleteRoot(var h: pheap; n: pnode);
+begin
+  LRPointers(n);
+  Dec(h^.size);
+end;
+
+function ExtractMin(var h: pheap): pnode;
+var
+  z: pnode;
+begin
+  z := h^.min;
+  if (z <> nil) then
+  begin
+    while (z^.child <> nil) do
+      Cut(h, z^.child);
+    DeleteRoot(h, z);
+    if (z^.right = z) then
+      h^.min := nil
+    else
+    begin
+      h^.min := h^.min^.right;
+      // consolidate(h);
+    end;
+  end;
+  Result := z;
+end;
+
+procedure HeapLink(var h: pheap; y, x: pnode);
+var
+  tmp: ppnode;
+begin
+  DeleteRoot(h, y);
+  tmp := @x^.child;
+  Insert(h, y, tmp, x);
+  y^.mark := False;
+end;
+
+//TODO: Think about circle
+procedure Consolidate(var h: pheap);
+var
+  A: array of pnode;
+  x, y, w: pnode;
+  i, d, HEAP_ROOTS, MAX_DEGREE: Integer;
+begin
+  SetLength(A, DEFAULT_SIZE);
+  MAX_DEGREE := 0;
+  HEAP_ROOTS := h^.size;
+  for i := 0 to HEAP_ROOTS - 1 do // this
+    Break;
+end;
+
+procedure DecreaseKey(var h: pheap; x: pnode; k: Integer);
 var
   y: pnode;
 begin
   if (k > x^.key) then
-  begin
-    Writeln('Error');
     Exit;
-  end;
   x^.key := k;
   y := x^.parent;
-  if (y <> nil) and (x^.key < y^.key) then
+  if ((y <> nil) and cmp(x, y)) then
   begin
-    //cut(h,x,y);
-    //cascadingCut(h,y);
-  end;
-  if (y^.key < heapMin(h)^.key) then
+    Cut(h, x);
+    CascadingCut(h, y);
+  end
+  else if (cmp(x, h^.min)) then
     h^.min := x;
 end;
 
-procedure heapDelete(var h:pheap;x:pnode);
+//TODO: Think about negative infinity (Low(Integer))
+procedure HeapDelete(var h: pheap; x: pnode);
 begin
- decreaseKey(h,x,Low(Integer));
- extractMin(h);
+  DecreaseKey(h, x, Low(Integer));
+  ExtractMin(h);
 end;
 
 begin
   { TODO -oUser -cConsole Main : Insert code here }
 end.
+
