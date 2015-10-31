@@ -102,7 +102,7 @@ begin
   end
   else
   begin
-  //TODO
+
   end;
   Inc(x^.degree);
   y^.mark := False;
@@ -141,7 +141,7 @@ begin
   for i := 0 to SIZE do
   begin
     if (A[i] <> nil) then
-      if (heapMin(h) = nil) or A[i].key < heapMin(h)^.key then
+      if (h^.min = nil) or A[i].key < h^.min^.key then
         h^.min := A[i];
   end;
 end;
@@ -177,15 +177,13 @@ begin
 end;
 
 //TODO
-
-procedure cut(var h: pheap; x, y: pnode);
+procedure cut(var h:pheap;x,y:pnode);
 begin
   //TODO: 1-2   from book
-  x^.parent := nil;
+  x^.parent:=nil;
   x^.mark := False;
 end;
 //TODO
-
 procedure cascadingCut(var h: pheap; y: pnode);
 var
   z: pnode;
@@ -197,8 +195,8 @@ begin
       y^.mark := True
     else
     begin
-      // cut(h, y, z);
-      // cascadingCut(h, z);
+     // cut(h, y, z);
+     // cascadingCut(h, z);
     end;
   end;
 end;
@@ -223,13 +221,12 @@ begin
     h^.min := x;
 end;
 
-procedure heapDelete(var h: pheap; x: pnode);
+procedure heapDelete(var h:pheap;x:pnode);
 begin
-  decreaseKey(h, x, Low(Integer));
-  extractMin(h);
+ decreaseKey(h,x,Low(Integer));
+ extractMin(h);
 end;
 
 begin
   { TODO -oUser -cConsole Main : Insert code here }
 end.
-
