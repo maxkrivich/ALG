@@ -21,14 +21,13 @@ type
     min: pnode;
   end;
 const
-  DEFAULT_SIZE: Integer = 42;
+  DEFAULT_SIZE: Integer = 43;
 
 procedure MakeFib(var head: pheap);
 begin
   New(head);
   head^.size := 0;
   head^.min := nil;
-
 end;
 
 function cmp(n0, n1: pnode): Boolean;
@@ -37,6 +36,15 @@ begin
     Result := True
   else
     Result := False;
+end;
+
+procedure Swap(var a, b: pnode);
+var
+  tmp: pnode;
+begin
+  tmp := a;
+  a := b;
+  b := tmp;
 end;
 
 function HeapMin(heap: pheap): pnode;
@@ -54,7 +62,6 @@ begin
   Result^.right := Result;
   Result^.degree := 0;
   Result^.mark := False;
-  // Result := Result;
 end;
 
 procedure Insert(var h: pheap; var x: pnode; var rb: ppnode); overload;
@@ -81,8 +88,7 @@ begin
   end;
 end;
 
-procedure Insert(var h: pheap; x: pnode; var rb: ppnode; var p: pnode);
-  overload;
+procedure Insert(var h: pheap; x: pnode; var rb: ppnode; var p: pnode); overload;
 begin
   Insert(h, x, rb);
   if (p <> nil) then
@@ -159,7 +165,7 @@ var
   z: pnode;
 begin
   z := y^.parent;
-  if (z <> nil) then
+  if ((z <> nil) and (z^.degree > 0)) then
   begin
     if not (z^.mark) then
       z^.mark := True
