@@ -6,10 +6,12 @@ uses
 
 type
   // Node
+  TKey = Integer;
   ppnode = ^pnode;
   pnode = ^node;
   node = record
-    key, degree: Integer;
+    key: TKey;
+    degree: Integer;
     parent, child, left, right: pnode;
     mark: Boolean;
   end;
@@ -88,7 +90,8 @@ begin
   end;
 end;
 
-procedure Insert(var h: pheap; x: pnode; var rb: ppnode; var p: pnode); overload;
+procedure Insert(var h: pheap; x: pnode; var rb: ppnode; var p: pnode);
+  overload;
 begin
   Insert(h, x, rb);
   if (p <> nil) then
@@ -183,27 +186,6 @@ begin
   Dec(h^.size);
 end;
 
-function ExtractMin(var h: pheap): pnode;
-var
-  z: pnode;
-begin
-  z := h^.min;
-  if (z <> nil) then
-  begin
-    while (z^.child <> nil) do
-      Cut(h, z^.child);
-    DeleteRoot(h, z);
-    if (z^.right = z) then
-      h^.min := nil
-    else
-    begin
-      h^.min := h^.min^.right;
-      // consolidate(h);
-    end;
-  end;
-  Result := z;
-end;
-
 procedure HeapLink(var h: pheap; y, x: pnode);
 var
   tmp: ppnode;
@@ -220,12 +202,64 @@ var
   A: array of pnode;
   x, y, w: pnode;
   i, d, HEAP_ROOTS, MAX_DEGREE: Integer;
+  tmp: ppnode;
 begin
   SetLength(A, DEFAULT_SIZE);
   MAX_DEGREE := 0;
   HEAP_ROOTS := h^.size;
-  for i := 0 to HEAP_ROOTS - 1 do // this
-    Break;
+  x := h^.min;
+  for i := 1 to HEAP_ROOTS do
+  begin
+    w := x^.right;
+    d := x^.degree;
+    while (A[d] <> nil) do
+    begin
+      y := A[d];
+      if (cmp(y, x)) then
+        Swap(x, y);
+      HeapLink(h, y, x);
+      A[d] := nil;
+      Inc(d);
+    end;
+    A[d] := x;
+    MAX_DEGREE := Max(d, MAX_DEGREE);
+    x := w;
+  end;
+  h^.min := nil;
+  h^.size := 0;
+  for i := 0 to MAX_DEGREE do
+    if (A[i] <> nil) then
+    begin
+      tmp := @h^.min;
+      Insert(h, A[i], tmp);
+    end;
+end;
+
+function ExtractMin(var h: pheap): TKey;
+var
+  z: pnode;
+begin
+  z := h^.min;
+  if (z <> nil) then
+  begin
+    while (z^.child <> nil) do
+      Cut(h, z^.child);
+    DeleteRoot(h, z);
+    if (z^.right = z) then
+      h^.min := nil
+    else
+    begin
+      h^.min := h^.min^.right;
+      Consolidate(h);
+    end;
+  end;
+  if (z <> nil) then
+  begin
+    Result := z^.key;
+    Dispose(z);
+  end
+  else
+    Result := High(TKey);
 end;
 
 procedure DecreaseKey(var h: pheap; x: pnode; k: Integer);
@@ -246,13 +280,32 @@ begin
 end;
 
 //TODO: Think about negative infinity (Low(Integer))
+
 procedure HeapDelete(var h: pheap; x: pnode);
 begin
   DecreaseKey(h, x, Low(Integer));
   ExtractMin(h);
 end;
-
+var
+  i: Integer;
+  h: pheap;
+  n: pnode;
 begin
+  MakeFib(h);
+  Randomize;
+  Writeln(h^.size);
+  Add(h,5);
+  Add(h,4);
+  Add(h,3);
+  Add(h,2);
+  Add(h,1);
+  for i := 1 to 5 do
+  begin
+    Writeln(ExtractMin(h));
+    readln;
+  end;
+  readln;
+  readln;
   { TODO -oUser -cConsole Main : Insert code here }
 end.
 
