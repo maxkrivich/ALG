@@ -281,16 +281,12 @@ begin
 end;
 
 //TODO: Think about negative infinity (Low(Integer))
-
 procedure HeapDelete(var h: pheap; var x: pnode);
 begin
   DecreaseKey(h, x, Low(Integer));
   ExtractMin(h);
 end;
-var
-  i: Integer;
-  h: pheap;
-  n: pnode;
+
 begin
   { TODO -oUser -cConsole Main : Insert code here }
 end.
