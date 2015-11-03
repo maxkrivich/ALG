@@ -90,8 +90,7 @@ begin
   end;
 end;
 
-procedure Insert(var h: pheap; x: pnode; var rb: ppnode; var p: pnode);
-  overload;
+procedure Insert(var h: pheap; x: pnode; var rb: ppnode; var p: pnode); overload;
 begin
   Insert(h, x, rb);
   if (p <> nil) then
@@ -148,22 +147,24 @@ begin
   end;
 end;
 
-procedure Cut(var h: pheap; var n: pnode);
+procedure Cut(var h: pheap; n: pnode);
 var
   tmp: ppnode;
+  tmpN:pnode;
 begin
   Dec(n^.parent^.degree);
   if (n^.right = n) then
     n^.parent^.child := nil
   else
     n^.parent^.child := n^.right;
+    if(n<>nil)then
   LRPointers(n);
   tmp := @h^.min;
   Insert(h, n, tmp);
   n^.mark := False;
 end;
 
-procedure CascadingCut(var h: pheap; y: pnode);
+procedure CascadingCut(var h: pheap; var y: pnode);
 var
   z: pnode;
 begin
@@ -180,13 +181,13 @@ begin
   end;
 end;
 
-procedure DeleteRoot(var h: pheap; n: pnode);
+procedure DeleteRoot(var h: pheap; var n: pnode);
 begin
   LRPointers(n);
   Dec(h^.size);
 end;
 
-procedure HeapLink(var h: pheap; y, x: pnode);
+procedure HeapLink(var h: pheap; var y, x: pnode);
 var
   tmp: ppnode;
 begin
@@ -262,7 +263,7 @@ begin
     Result := High(TKey);
 end;
 
-procedure DecreaseKey(var h: pheap; x: pnode; k: Integer);
+procedure DecreaseKey(var h: pheap; var x: pnode; k: Integer);
 var
   y: pnode;
 begin
@@ -281,7 +282,7 @@ end;
 
 //TODO: Think about negative infinity (Low(Integer))
 
-procedure HeapDelete(var h: pheap; x: pnode);
+procedure HeapDelete(var h: pheap; var x: pnode);
 begin
   DecreaseKey(h, x, Low(Integer));
   ExtractMin(h);
@@ -291,21 +292,6 @@ var
   h: pheap;
   n: pnode;
 begin
-  MakeFib(h);
-  Randomize;
-  Writeln(h^.size);
-  Add(h,5);
-  Add(h,4);
-  Add(h,3);
-  Add(h,2);
-  Add(h,1);
-  for i := 1 to 5 do
-  begin
-    Writeln(ExtractMin(h));
-    readln;
-  end;
-  readln;
-  readln;
   { TODO -oUser -cConsole Main : Insert code here }
 end.
 
