@@ -6,7 +6,13 @@ uses
   SysUtils, DateUtils, Math;
 
 type
+  pnode = ^node;
+  node = record
+    key: Double;
+    next: pnode;
+  end;
   TArr = array of Integer;
+  TPArr: array of pnode;
 
 const
   range: Integer = 100;
@@ -27,7 +33,7 @@ begin
   i := 1;
   while (Result and (i < Length(arr))) do
   begin
-    if not(arr[i] >= arr[i - 1]) then
+    if not (arr[i] >= arr[i - 1]) then
       Result := False;
     Inc(i);
   end;
@@ -49,7 +55,7 @@ var
 begin
   Randomize;
   for i := Low(arr) to High(arr) do
-    arr[i] := Random(range + 100); // - range div 2;
+    arr[i] := Random(range + 100); //- range div 2;
 end;
 
 procedure print(arr: TArr);
@@ -75,7 +81,7 @@ begin
     iSt := mCh;
     mCh := getLeftChild(iSt);
   end;
-  // print(arr);
+  //print(arr);
 end;
 
 procedure HeapSort(var arr: TArr);
@@ -116,14 +122,14 @@ begin
       if (l < iMid + 1) and ((r > iEn) or (arr[l] < arr[r])) then
       begin
         arrTmp[i] := arr[l];
-        Inc(l);
+        inc(l);
       end
       else
       begin
         arrTmp[i] := arr[r];
-        Inc(r);
+        inc(r);
       end;
-      Inc(i);
+      inc(i);
     end;
     for i := iSt to iEn do
       arr[i] := arrTmp[i];
@@ -177,41 +183,6 @@ begin
   end;
 end;
 
-procedure BucketSort(var arr: TArr);
-type
-  pnode = ^node;
-
-  node = record
-    val: Integer;
-    next: pnode;
-  end;
-var
-  max, min, i, j: Integer;
-  bucket: array of pnode;
-  n: pnode;
-begin
-  if (Length(arr) < 2) then
-    Exit;
-  max := MaxIntValue(arr);
-  min := MinIntValue(arr);
-  SetLength(bucket, max - min + 1);
-  for i := Low(arr) to High(arr) do
-  begin
-    New(n);
-    n^.val := arr[i];
-    n^.next := bucket[arr[i] - min];
-    bucket[arr[i] - min] := n;
-  end;
-  j := 0;
-  for i := Low(bucket) to High(bucket) do
-    while (bucket[i] <> nil) do
-    begin
-      arr[j] := bucket[i]^.val;
-      Inc(j);
-      bucket[i] := bucket[i]^.next;
-    end;
-end;
-
 var
   arr: TArr;
   i: Integer;
@@ -222,9 +193,10 @@ begin
   gen(arr);
   print(arr);
   t1 := Time();
-  BucketSort(arr);
+  RadixSort(arr);
   t2 := Time();
   print(arr);
-  writeln('TOTAL TIME: ', millisecondsbetween(t2, t1));
+  Writeln('TOTAL TIME: ', millisecondsbetween(t2, t1));
   Readln;
 end.
+
