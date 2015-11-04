@@ -2,7 +2,7 @@ program FibHeap;
 {$APPTYPE CONSOLE}
 
 uses
-  SysUtils, Math;
+  SysUtils, Math, DateUtils;
 
 type
   // Node
@@ -90,7 +90,8 @@ begin
   end;
 end;
 
-procedure Insert(var h: pheap; x: pnode; var rb: ppnode; var p: pnode); overload;
+procedure Insert(var h: pheap; x: pnode; var rb: ppnode; var p: pnode);
+  overload;
 begin
   Insert(h, x, rb);
   if (p <> nil) then
@@ -150,15 +151,15 @@ end;
 procedure Cut(var h: pheap; n: pnode);
 var
   tmp: ppnode;
-  tmpN:pnode;
+  tmpN: pnode;
 begin
   Dec(n^.parent^.degree);
   if (n^.right = n) then
     n^.parent^.child := nil
   else
     n^.parent^.child := n^.right;
-    if(n<>nil)then
-  LRPointers(n);
+  if (n <> nil) then
+    LRPointers(n);
   tmp := @h^.min;
   Insert(h, n, tmp);
   n^.mark := False;
@@ -198,6 +199,7 @@ begin
 end;
 
 //TODO: Think about circle
+
 procedure Consolidate(var h: pheap);
 var
   A: array of pnode;
@@ -281,13 +283,36 @@ begin
 end;
 
 //TODO: Think about negative infinity (Low(Integer))
+
 procedure HeapDelete(var h: pheap; var x: pnode);
 begin
   DecreaseKey(h, x, Low(Integer));
   ExtractMin(h);
 end;
 
+var
+  t1, t2: TDateTime;
+  i: Integer;
+  h: pheap;
+  t:Int64;
+
 begin
+  Randomize;
+  MakeFib(h);
+  t:=0;
+  for i := 1 to 50000 do
+  begin
+    t1 := Time();
+    Add(h, Random(i * 2) - i);
+    t2:=time();
+    Inc(t,MillisecondsBetween(t1, t2));
+  end;
+  //t1 := Time();
+  //for i := 1 to 10000000 do
+    //ExtractMin(h);
+  //t2 := Time();
+  writeln(t);
+  readln;
   { TODO -oUser -cConsole Main : Insert code here }
 end.
 
