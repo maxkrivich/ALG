@@ -6,7 +6,7 @@
  - Find Min   +
  - Heap Union +
  - Extract Min +
- - Consolidate --+
+ - Consolidate +
  - Heap Link +
  - Decrease Key +
  - Cut +
