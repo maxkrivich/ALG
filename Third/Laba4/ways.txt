@@ -1,0 +1,5 @@
+1->END WAY
+1->2->END WAY
+1->4->3->END WAY
+1->4->END WAY
+1->4->3->5->END WAY

@@ -100,7 +100,7 @@ begin
   Rewrite(Output);
 {$N+,E-};
   i := Low(d);
-  while ((d[i] <> INF) and (i < Length(d))) do 
+  while ((d[i] <> INF) and (i < Length(d))) do
   begin
     Writeln((i + 1), ' ', d[i]);
     Inc(i);
@@ -111,7 +111,7 @@ end;
 
 procedure Dijkstra(const s, n: Integer);
 var
-  i, j, v, k: Integer;
+  i, j, v: Integer;
   tmp: pnode;
 begin
   d[s] := 0;
@@ -136,18 +136,86 @@ begin
   end;
 end;
 
-//TODO:write
-procedure Way();
-begin
+procedure Way(const s, t: Integer);
+type
+  pnote = ^note;
 
+  note = record
+    v: Integer;
+    next: pnote;
+  end;
+var
+  head: pnote;
+  v, pr: Integer;
+  procedure PushBack(v: Integer);
+  var
+    pt, tmp: pnote;
+  begin
+    pt := head;
+    if (pt <> nil) then
+    begin
+      while (pt^.next <> nil) do
+        pt := pt^.next;
+      New(tmp);
+      tmp^.v := v;
+      tmp^.next := pt^.next;
+      pt^.next := tmp;
+    end
+    else
+    begin
+      New(tmp);
+      tmp^.v := v;
+      tmp^.next := head;
+      head := tmp;
+    end;
+  end;
+
+  procedure PrintWay(root: pnote);
+  begin
+    if (root = nil) then
+      Exit;
+    PrintWay(root^.next);
+    if (root^.v <> pr) then
+      Write(root^.v + 1, '->')
+    else
+      Write('END WAY');
+  end;
+
+begin
+  head := nil;
+  v := t;
+  pr := Low(Integer);
+  PushBack(pr);
+  while (v <> s) do
+  begin
+    PushBack(v);
+    v := p[v];
+  end;
+  PushBack(s);
+  PrintWay(head);
+  Writeln;
+end;
+
+procedure WaysFile(const cnt, s: Integer);
+var
+  i: Integer;
+begin
+  Assign(Output, 'ways.txt');
+  Rewrite(Output);
+  for i := Low(d) to cnt - 1 do
+    Way(s, i);
+  Close(Output);
 end;
 
 var
   tmp: rec;
+  i: Integer;
 
 begin
   Init;
   tmp := InputFile;
   Dijkstra(tmp.startVertex - 1, tmp.vertexAmount);
   OutputFile;
+  WaysFile(tmp.vertexAmount, tmp.startVertex - 1);
+
 end.
