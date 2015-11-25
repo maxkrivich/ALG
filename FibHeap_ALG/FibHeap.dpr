@@ -34,10 +34,7 @@ end;
 
 function cmp(n0, n1: pnode): Boolean;
 begin
-  if (n0^.key < n1^.key) then
-    Result := True
-  else
-    Result := False;
+  Result := (n0^.key < n1^.key);
 end;
 
 procedure Swap(var a, b: pnode);
@@ -198,8 +195,6 @@ begin
   y^.mark := False;
 end;
 
-//TODO: Think about circle
-
 procedure Consolidate(var h: pheap);
 var
   A: array of pnode;
@@ -282,8 +277,6 @@ begin
     h^.min := x;
 end;
 
-//TODO: Think about negative infinity (Low(Integer))
-
 procedure HeapDelete(var h: pheap; var x: pnode);
 begin
   DecreaseKey(h, x, Low(Integer));
@@ -291,28 +284,50 @@ begin
 end;
 
 var
-  t1, t2: TDateTime;
+  arr: array of pheap;
   i: Integer;
-  h: pheap;
-  t:Int64;
+
+function menu: Byte;
+begin
+  Writeln('Heap ¹', i);
+  Writeln('1.Change heap');
+  Writeln('2.Add key');
+  Writeln('3.Extract min');
+  Writeln('4.Heap Union');
+  Readln(Result);
+end;
+
+procedure Init;
+begin
+  SetLength(arr, 3);
+  for i := Low(arr) to High(arr) do
+    MakeFib(arr[i]);
+  i := 0;
+end;
+
+var
+  key: Integer;
 
 begin
-  Randomize;
-  MakeFib(h);
-  t:=0;
-  for i := 1 to 50000 do
-  begin
-    t1 := Time();
-    Add(h, Random(i * 2) - i);
-    t2:=time();
-    Inc(t,MillisecondsBetween(t1, t2));
-  end;
-  //t1 := Time();
-  //for i := 1 to 10000000 do
-    //ExtractMin(h);
-  //t2 := Time();
-  writeln(t);
-  readln;
+  Init;
+  repeat
+    case menu of
+      1: Readln(i);
+      2:
+        begin
+          Readln(key);
+          Add(arr[i], key);
+        end;
+      3: Writeln(ExtractMin(arr[i]));
+      4:
+        begin
+          Readln(key);
+          arr[i] := HeapUnion(arr[i], arr[key]);
+        end;
+    else
+      Continue;
+    end;
+  until 1 <> 1;
   { TODO -oUser -cConsole Main : Insert code here }
 end.
 
