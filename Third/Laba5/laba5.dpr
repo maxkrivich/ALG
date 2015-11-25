@@ -53,13 +53,18 @@ var
   t1, t2: TDateTime;
 
 begin
-  Write('Input N: ');
+  // Write('Input N: ');
+  Assign(Input, 'input.txt');
+  Reset(Input);
+  Assign(Output, 'output.txt');
+  Rewrite(Output);
   Readln(N);
+  Close(Input);
   Init();
   t1 := Time();
   Backtracking(0);
   t2 := Time();
   Writeln('COUNTS: ', CNT);
   Writeln('TIME: ', MilliSecondsBetween(t2, t1));
-  Readln;
+  Close(Output);
 end.
