@@ -302,8 +302,6 @@ begin
       Writeln(pt1^.key);
       pt1 := pt2;
     end;
-    if(pt1 = root) then
-      Writeln(pt1^.key);
   end;
 end;
 
