@@ -283,6 +283,32 @@ begin
   ExtractMin(h);
 end;
 
+procedure PrintNode(head: pnode);
+
+  function GetAddressOf(var X): string;
+  begin
+    if Pointer(@X) = nil then
+    begin
+      Result := 'NIL';
+      Exit;
+    end;
+    Result := IntToHex(Integer(Pointer(@X)), 8);
+  end;
+begin
+  if (head <> nil) then
+    with head^ do
+    begin
+      Write('[ KEY: ', key, ' ');
+      Write('DEGREE: ', degree, ' ');
+      Write('PARENT: ', GetAddressOf(parent^), ' ');
+      Write('CHILD: ', GetAddressOf(child^), ' ');
+      Write('LEFT: ', GetAddressOf(left^), ' ');
+      Write('RIGHT: ', GetAddressOf(right^), ' ');
+      Write('MARK: ', mark, ' ]');
+      Writeln;
+    end
+end;
+
 procedure print(flag: Boolean; root: pnode);
 var
   pt1, pt2: pnode;
@@ -290,7 +316,7 @@ begin
   if (root^.child <> nil) then
   begin
     print(True, root^.child);
-    Writeln(root^.key);
+    PrintNode(root);
   end;
   if (flag) then
   begin
@@ -299,11 +325,9 @@ begin
     begin
       pt2 := pt1^.right;
       print(False, pt1);
-      Writeln(pt1^.key);
+      PrintNode(pt1);
       pt1 := pt2;
     end;
-    if(pt1 = root) then
-      Writeln(pt1^.key);
   end;
 end;
 
@@ -313,11 +337,12 @@ var
 
 function menu: Byte;
 begin
-  Writeln('Heap ¹', i);
+  Writeln('Heap #', i,' size heap[i]: ', arr[i]^.size);
   Writeln('1.Change heap');
   Writeln('2.Add key');
   Writeln('3.Extract min');
   Writeln('4.Heap Union');
+  Writeln('5.Print');
   Readln(Result);
 end;
 
@@ -349,6 +374,11 @@ begin
           arr[i] := HeapUnion(arr[i], arr[key]);
         end;
       5: print(True, HeapMin(arr[i]));
+      6:
+        begin
+          for key := 1 to 100 do
+            Add(arr[i], key);
+        end;
     else
       Continue;
     end;
