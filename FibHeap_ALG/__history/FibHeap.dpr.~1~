@@ -304,8 +304,7 @@ begin
       Write('CHILD: ', GetAddressOf(child^), ' ');
       Write('LEFT: ', GetAddressOf(left^), ' ');
       Write('RIGHT: ', GetAddressOf(right^), ' ');
-      Write('MARK: ', mark, ' ] ');
-      Write('NODE: ', GetAddressOf(head^));
+      Write('MARK: ', mark, ' ]');
       Writeln;
     end
 end;
@@ -317,17 +316,18 @@ begin
   if (root^.child <> nil) then
   begin
     print(True, root^.child);
-   // PrintNode(root);
+    PrintNode(root);
   end;
   if (flag) then
   begin
-    pt1 := root;
-    repeat
+    pt1 := root^.right;
+    while (pt1 <> root) do
+    begin
       pt2 := pt1^.right;
       print(False, pt1);
       PrintNode(pt1);
       pt1 := pt2;
-    until pt1 = root;
+    end;
   end;
 end;
 
@@ -376,7 +376,7 @@ begin
       5: print(True, HeapMin(arr[i]));
       6:
         begin
-          for key := 1 to 5 do
+          for key := 1 to 100 do
             Add(arr[i], key);
         end;
     else
