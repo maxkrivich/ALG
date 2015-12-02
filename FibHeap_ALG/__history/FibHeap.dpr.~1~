@@ -9,7 +9,6 @@ type
   TKey = Integer;
   ppnode = ^pnode;
   pnode = ^node;
-
   node = record
     key: TKey;
     degree: Integer;
@@ -19,12 +18,10 @@ type
 
   // Heap
   pheap = ^heap;
-
   heap = record
     size: Integer;
     min: pnode;
   end;
-
 const
   DEFAULT_SIZE: Integer = 43;
 
@@ -172,7 +169,7 @@ begin
   z := y^.parent;
   if ((z <> nil) and (z^.degree > 0)) then
   begin
-    if not(z^.mark) then
+    if not (z^.mark) then
       z^.mark := True
     else
     begin
@@ -200,12 +197,12 @@ end;
 
 procedure Consolidate(var h: pheap);
 var
-  a: array of pnode;
+  A: array of pnode;
   x, y, w: pnode;
   i, d, HEAP_ROOTS, MAX_DEGREE: Integer;
   tmp: ppnode;
 begin
-  SetLength(a, DEFAULT_SIZE);
+  SetLength(A, DEFAULT_SIZE);
   MAX_DEGREE := 0;
   HEAP_ROOTS := h^.size;
   x := h^.min;
@@ -213,26 +210,26 @@ begin
   begin
     w := x^.right;
     d := x^.degree;
-    while (a[d] <> nil) do
+    while (A[d] <> nil) do
     begin
-      y := a[d];
+      y := A[d];
       if (cmp(y, x)) then
         Swap(x, y);
       HeapLink(h, y, x);
-      a[d] := nil;
+      A[d] := nil;
       Inc(d);
     end;
-    a[d] := x;
+    A[d] := x;
     MAX_DEGREE := Max(d, MAX_DEGREE);
     x := w;
   end;
   h^.min := nil;
   h^.size := 0;
   for i := 0 to MAX_DEGREE do
-    if (a[i] <> nil) then
+    if (A[i] <> nil) then
     begin
       tmp := @h^.min;
-      Insert(h, a[i], tmp);
+      Insert(h, A[i], tmp);
     end;
 end;
 
@@ -288,16 +285,15 @@ end;
 
 procedure PrintNode(head: pnode);
 
-  function GetAddressOf(var x): string;
+  function GetAddressOf(var X): string;
   begin
-    if Pointer(@x) = nil then
+    if Pointer(@X) = nil then
     begin
       Result := 'NIL';
       Exit;
     end;
-    Result := IntToHex(Integer(Pointer(@x)), 8);
+    Result := IntToHex(Integer(Pointer(@X)), 8);
   end;
-
 begin
   if (head <> nil) then
     with head^ do
@@ -314,22 +310,22 @@ begin
     end
 end;
 
-procedure print(flag: Boolean; root: pnode; s: String);
+procedure print(flag: Boolean; root: pnode);
 var
   pt1, pt2: pnode;
 begin
   if (root^.child <> nil) then
   begin
-    Writeln(s, root^.key);
-    print(True, root^.child, s + '_');
+    print(True, root^.child);
+   // PrintNode(root);
   end;
   if (flag) then
   begin
     pt1 := root;
     repeat
       pt2 := pt1^.right;
-      print(False, pt1, s);  
-      Writeln(s, pt1^.key);    
+      print(False, pt1);
+      PrintNode(pt1);
       pt1 := pt2;
     until pt1 = root;
   end;
@@ -341,7 +337,7 @@ var
 
 function menu: Byte;
 begin
-  Writeln('Heap #', i, ' size heap[i]: ', arr[i]^.size);
+  Writeln('Heap #', i,' size heap[i]: ', arr[i]^.size);
   Writeln('1.Change heap');
   Writeln('2.Add key');
   Writeln('3.Extract min');
@@ -365,22 +361,19 @@ begin
   Init;
   repeat
     case menu of
-      1:
-        Readln(i);
+      1: Readln(i);
       2:
         begin
           Readln(key);
           Add(arr[i], key);
         end;
-      3:
-        Writeln(ExtractMin(arr[i]));
+      3: Writeln(ExtractMin(arr[i]));
       4:
         begin
           Readln(key);
           arr[i] := HeapUnion(arr[i], arr[key]);
         end;
-      5:
-        print(True, HeapMin(arr[i]), '');
+      5: print(True, HeapMin(arr[i]));
       6:
         begin
           for key := 1 to 5 do
@@ -390,6 +383,6 @@ begin
       Continue;
     end;
   until 1 <> 1;
-
   { TODO -oUser -cConsole Main : Insert code here }
 end.
+
