@@ -2,7 +2,7 @@ program FibHeap;
 {$APPTYPE CONSOLE}
 
 uses
-  SysUtils, Math, DateUtils;
+  SysUtils, Math, DateUtils, Windows;
 
 type
   // Node
@@ -54,7 +54,7 @@ begin
   Result := heap.min;
 end;
 
-function NewNode(key: Integer): pnode;
+function NewNode(key: TKey): pnode;
 begin
   New(Result);
   Result^.key := key;
@@ -101,7 +101,7 @@ begin
   end;
 end;
 
-procedure Add(var h: pheap; key: Integer);
+procedure Add(var h: pheap; key: TKey);
 var
   tmp: ppnode;
   n: pnode;
@@ -172,7 +172,7 @@ begin
   z := y^.parent;
   if ((z <> nil) and (z^.degree > 0)) then
   begin
-    if not(z^.mark) then
+    if not (z^.mark) then
       z^.mark := True
     else
     begin
@@ -263,7 +263,7 @@ begin
     Result := High(TKey);
 end;
 
-procedure DecreaseKey(var h: pheap; var x: pnode; k: Integer);
+procedure DecreaseKey(var h: pheap; var x: pnode; k: TKey);
 var
   y: pnode;
 begin
@@ -286,7 +286,7 @@ begin
   ExtractMin(h);
 end;
 
-procedure PrintNode(head: pnode);
+{procedure PrintNode(head: pnode);
 
   function GetAddressOf(var x): string;
   begin
@@ -312,27 +312,46 @@ begin
       Write('NODE: ', GetAddressOf(head^));
       Writeln;
     end
-end;
+end;}
 
-procedure print(flag: Boolean; root: pnode; s: String);
+procedure print(flag: Boolean; root: pnode; s: string);
 var
-  pt1, pt2: pnode;
+  pt: pnode;
 begin
   if (root^.child <> nil) then
-  begin
-    Writeln(s, root^.key);
     print(True, root^.child, s + '_');
-  end;
   if (flag) then
   begin
-    pt1 := root;
+    pt := root;
     repeat
-      pt2 := pt1^.right;
-      print(False, pt1, s);  
-      Writeln(s, pt1^.key);    
-      pt1 := pt2;
-    until pt1 = root;
+      Writeln(s, pt^.key);
+      print(False, pt, s);
+      pt := pt^.right;
+    until not (pt = root);
   end;
+
+end;
+
+const
+  st: string = '------------------------------------------------------------';
+
+function inNum(str: string): Integer;
+begin
+  while True do
+    try
+      Write(str);
+      Readln(Result);
+      Break;
+    except
+      on E: Exception do
+      begin
+        Writeln(st);
+        Writeln('| Что-то пошло не так: ', E.message);
+        Writeln('| Попробуйте еще раз');
+        Writeln(st);
+      end;
+    end;
+
 end;
 
 var
@@ -341,13 +360,17 @@ var
 
 function menu: Byte;
 begin
-  Writeln('Heap #', i, ' size heap[i]: ', arr[i]^.size);
-  Writeln('1.Change heap');
-  Writeln('2.Add key');
-  Writeln('3.Extract min');
-  Writeln('4.Heap Union');
-  Writeln('5.Print');
-  Readln(Result);
+
+  Writeln('   Куча №', i + 1, ' из ', Length(arr), ' | Кол-во узлов: ',
+    arr[i]^.size);
+  Writeln('   1.Сменить кучу');
+  Writeln('   2.Добавить новый ключ в кучу');
+  Writeln('   3.Извлечь минимальный ключ');
+  Writeln('   4.Объединить две кучи в одну');
+  Writeln('   5.Распечатать');
+  Writeln('   6.Выход');
+  Writeln;
+  Result := inNum('   Сделайте свой выбор: ');
 end;
 
 procedure Init;
@@ -359,37 +382,79 @@ begin
 end;
 
 var
-  key: Integer;
+  key, t: TKey;
+  pt: pnode;
 
 begin
+  SetConsoleOutputCP(1251);
+  SetConsoleCP(1251);
   Init;
   repeat
+    Writeln('@---------------\*MЕНЮ*/----------------@');
     case menu of
+
       1:
-        Readln(i);
+        begin
+          Writeln('@-------------\*ОПЕРАЦИЯ*/--------------@');
+          repeat
+            i := inNum('   Введите номер кучи ' + IntToStr(Low(arr) + 1) + '-' +
+              IntToStr(High(arr) + 1) + ': ');
+            Dec(i);
+          until (i > -1) and (i <= High(arr));
+        end;
+
       2:
         begin
-          Readln(key);
+          Writeln('@-------------\*ОПЕРАЦИЯ*/--------------@');
+          key := inNum('   Введите значение ключа(int): ');
           Add(arr[i], key);
         end;
       3:
-        Writeln(ExtractMin(arr[i]));
+        begin
+          Writeln('@-------------\*ОПЕРАЦИЯ*/--------------@');
+          key := ExtractMin(arr[i]);
+          if (key <> High(TKey)) then
+            Writeln('   Извлеченный ключ: ', key)
+          else
+            Writeln('   Куча пуста!');
+        end;
       4:
         begin
-          Readln(key);
-          arr[i] := HeapUnion(arr[i], arr[key]);
+          Writeln('@-------------\*ОПЕРАЦИЯ*/--------------@');
+          repeat
+            key := inNum('   Введите номер кучи ' + IntToStr(Low(arr) + 1) + '-'
+              + IntToStr(High(arr) + 1) + ': ');
+            Dec(key);
+          until (i > -1) and (i <= High(arr)) and (key <> i);
+          if ((arr[key]^.min <> nil) or (arr[i]^.min <> nil)) then
+            arr[i] := HeapUnion(arr[i], arr[key])
+          else
+            Writeln('Ошибка, куча пуста');
         end;
       5:
-        print(True, HeapMin(arr[i]), '');
-      6:
         begin
-          for key := 1 to 5 do
+          Writeln('@-------------\*ОПЕРАЦИЯ*/--------------@');
+          if (arr[i]^.min <> nil) then
+            print(True, arr[i]^.min, '')
+          else
+            Writeln('Ошибка, куча пуста');
+        end;
+      6: Exit;
+      7:
+        begin
+          Randomize;
+          for t := 1 to 10 do
+          begin
+            key := Random(10);
             Add(arr[i], key);
+          end;
+
         end;
     else
       Continue;
     end;
+    Writeln('@---------------********----------------@');
   until 1 <> 1;
-
   { TODO -oUser -cConsole Main : Insert code here }
 end.
+
