@@ -314,22 +314,42 @@ begin
     end
 end;}
 
-procedure print(flag: Boolean; root: pnode; s: string);
+{procedure print(flag: Boolean; root: pnode; s: string);
 var
   pt: pnode;
 begin
   if (root^.child <> nil) then
+  begin
+    Writeln(s, root^.key);
     print(True, root^.child, s + '_');
+    //if (root^.right = root) then
+      flag := False;
+  end;
   if (flag) then
   begin
     pt := root;
     repeat
-      Writeln(s, pt^.key);
-      print(False, pt, s);
+      if (pt^.child = nil) then
+        Writeln(s, pt^.key)
+      else
+        print(False, pt, s);
       pt := pt^.right;
-    until not (pt = root);
+    until (pt = root);
   end;
 
+end;  }
+
+procedure print(root: pnode; s: string);
+var
+  pt: pnode;
+begin
+  pt := root;
+  repeat
+    Writeln(s, pt^.key);
+    if (pt^.child <> nil) then
+      print(pt^.child, s + '_');
+    pt := pt^.right;
+  until pt = root;
 end;
 
 const
@@ -426,7 +446,7 @@ begin
               + IntToStr(High(arr) + 1) + ': ');
             Dec(key);
           until (i > -1) and (i <= High(arr)) and (key <> i);
-          if ((arr[key]^.min <> nil) or (arr[i]^.min <> nil)) then
+          if ((arr[key]^.min <> nil) and (arr[i]^.min <> nil)) then
             arr[i] := HeapUnion(arr[i], arr[key])
           else
             Writeln('ќшибка, куча пуста');
@@ -435,7 +455,7 @@ begin
         begin
           Writeln('@-------------\*ќѕ≈–ј÷»я*/--------------@');
           if (arr[i]^.min <> nil) then
-            print(True, arr[i]^.min, '')
+            print(arr[i]^.min, '') //True, arr[i]^.min, '')
           else
             Writeln('ќшибка, куча пуста');
         end;
@@ -443,7 +463,7 @@ begin
       7:
         begin
           Randomize;
-          for t := 1 to 10 do
+          for t := 1 to 5 do
           begin
             key := Random(10);
             Add(arr[i], key);
