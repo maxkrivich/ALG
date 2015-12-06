@@ -169,7 +169,7 @@ begin
     med[i + 1, j] := tm;
   end;
 end;
-
+//русс тест
 begin
   SetConsoleCP(1251);
   SetConsoleOutputCP(1251);
