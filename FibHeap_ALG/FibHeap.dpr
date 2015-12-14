@@ -286,59 +286,6 @@ begin
   ExtractMin(h);
 end;
 
-{procedure PrintNode(head: pnode);
-
-  function GetAddressOf(var x): string;
-  begin
-    if Pointer(@x) = nil then
-    begin
-      Result := 'NIL';
-      Exit;
-    end;
-    Result := IntToHex(Integer(Pointer(@x)), 8);
-  end;
-
-begin
-  if (head <> nil) then
-    with head^ do
-    begin
-      Write('[ KEY: ', key, ' ');
-      Write('DEGREE: ', degree, ' ');
-      Write('PARENT: ', GetAddressOf(parent^), ' ');
-      Write('CHILD: ', GetAddressOf(child^), ' ');
-      Write('LEFT: ', GetAddressOf(left^), ' ');
-      Write('RIGHT: ', GetAddressOf(right^), ' ');
-      Write('MARK: ', mark, ' ] ');
-      Write('NODE: ', GetAddressOf(head^));
-      Writeln;
-    end
-end;}
-
-{procedure print(flag: Boolean; root: pnode; s: string);
-var
-  pt: pnode;
-begin
-  if (root^.child <> nil) then
-  begin
-    Writeln(s, root^.key);
-    print(True, root^.child, s + '_');
-    //if (root^.right = root) then
-      flag := False;
-  end;
-  if (flag) then
-  begin
-    pt := root;
-    repeat
-      if (pt^.child = nil) then
-        Writeln(s, pt^.key)
-      else
-        print(False, pt, s);
-      pt := pt^.right;
-    until (pt = root);
-  end;
-
-end;  }
-
 procedure print(root: pnode; s: string);
 var
   pt: pnode;
