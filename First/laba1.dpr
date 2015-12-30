@@ -3,7 +3,7 @@ program laba1;
 uses SysUtils;
 
 var
-  c, i, p, n: Byte;
+  c, i, p, n: Integer;
   x, y: Real;
 begin
   writeln('Laba 1  by Max Krivich');
